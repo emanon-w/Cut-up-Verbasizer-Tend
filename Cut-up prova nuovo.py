@@ -5,12 +5,10 @@ dpg.create_context()
 dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
                     min_width=500, min_height=500)
 
-
 #font
 with dpg.font_registry():
     default_font = dpg.add_font("Font\\times.ttf",20)
     grassetto_font= dpg.add_font("Font\\times-new-roman-bold.otf",20)
-
 
 #theme
 with dpg.theme() as global_theme:
@@ -34,7 +32,6 @@ with dpg.theme() as global_theme:
 dpg.bind_theme(global_theme)
 
 #variabili
-numero_frasi = 5
 lista_frasi = []
 
 #funzioni/callback
@@ -43,26 +40,23 @@ def Cancella_tutto (_, __):
         dpg.set_value(frasi, "")
 
 def Aggiungi_Riga(_, __):
-    global numero_frasi
-    numero_frasi += 1
     frasi = dpg.add_input_text(label="Inserisci qui la nuova frase:", before = spaziatore)
     lista_frasi.append(frasi)
 
 def Elimina_Riga(_, __): 
-    global numero_frasi
-    if numero_frasi > 5:
+    if len(lista_frasi) > 5:
         dpg.delete_item (lista_frasi.pop())
-        numero_frasi -= 1
-        print(numero_frasi)
 
 def Cut_up(_,__):
-    for frasi in (lista_frasi):
-        parole = dpg.get_value(frasi)   
-        lista_frasi.append(parole)
-        taglio = lista_frasi.split()
-        
-    random.shuffle(taglio)
-    dpg.add_text((taglio), before=ultima_barra)
+
+    lista_parole = []
+    for frasi in lista_frasi:
+
+        parole = dpg.get_value(frasi)
+        taglio = parole.split()
+        lista_parole.extend(taglio)
+    random.shuffle(lista_parole)
+    dpg.add_text(" ".join(lista_parole), before=ultima_barra)
 
 #window
 with dpg.window(label="Cut-up Verbasizer", width=1200, height=720) as w:
