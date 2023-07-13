@@ -32,6 +32,7 @@ with dpg.theme() as global_theme:
 dpg.bind_theme(global_theme)
 
 #variabili
+numero_frasi = 5
 lista_frasi = []
 
 #funzioni/callback
@@ -40,25 +41,28 @@ def Cancella_tutto (_, __):
         dpg.set_value(frasi, "")
 
 def Aggiungi_Riga(_, __):
-    frasi = dpg.add_input_text(label="Inserisci qui la nuova frase:", before = spaziatore)
-    lista_frasi.append(frasi)
+    global numero_frasi
+    numero_frasi += 1
+    testo = dpg.add_input_text(label="Inserisci qui la nuova frase:", before = spaziatore)
+    lista_frasi.append(testo)
+    print(numero_frasi)
 
 def Elimina_Riga(_, __): 
-    if len(lista_frasi) > 5:
+    global numero_frasi
+    if numero_frasi > 5:
         dpg.delete_item (lista_frasi.pop())
+        numero_frasi -= 1
+        print(numero_frasi)
 
 def Cut_up(_,__):
-
-    lista_parole = []
-    for frasi in lista_frasi:
-        parole = dpg.get_value(frasi)
-        taglio = parole.split()
-        lista_parole.extend(taglio)
-    random.shuffle(lista_parole)
-    dpg.add_text(" ".join(lista_parole), before=ultima_barra)
+    for frasi in range(numero_frasi):
+        () 
+        
+    random.shuffle(lista_frasi)
+    dpg.add_text((lista_frasi), before=ultima_barra)
 
 #window
-with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_scrollbar=True) as w:
+with dpg.window(label="Cut-up Verbasizer", width=1200, height=720) as w:
     dpg.bind_font(grassetto_font)
 
     dpg.add_text("Benvenuti nel Verbasizer. Inserisci le frasi negli spazi sottostanti per iniziare:")
@@ -70,12 +74,10 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
         button2= dpg.add_button(label="Aggiungi nuova riga", callback = Aggiungi_Riga)
         button3= dpg.add_button(label="Elimina riga", callback = Elimina_Riga)
 
-    for i in range(5):
-        frasi = dpg.add_input_text(label="Inserisci qui la frase:")
-        lista_frasi.append(frasi)
+    for i in range(numero_frasi):
+        frasi = dpg.add_input_text(default_value = "")
         dpg.add_spacer()
 
-    
     dpg.add_separator()
     spaziatore = dpg.add_spacer()
 
