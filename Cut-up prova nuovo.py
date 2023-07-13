@@ -3,7 +3,7 @@ import random
 
 dpg.create_context()
 dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
-                    min_width=500, min_height=500)
+                    min_width=600, min_height=600)
 
 #font
 with dpg.font_registry():
@@ -33,6 +33,7 @@ dpg.bind_theme(global_theme)
 
 #variabili
 lista_frasi = []
+lista_risultati = []
 
 #funzioni/callback
 def Cancella_tutto (_, __):
@@ -48,13 +49,20 @@ def Elimina_Riga(_, __):
         dpg.delete_item (lista_frasi.pop())
 
 def Cut_up(_,__):
+    global risultato
     lista_parole = []
     for frasi in lista_frasi:
         parole = dpg.get_value(frasi)
         taglio = parole.split()
         lista_parole.extend(taglio)
     random.shuffle(lista_parole)
-    dpg.add_text(" ".join(lista_parole), before=ultima_barra)
+    risultato = dpg.add_text(" ".join(lista_parole), before=ultima_barra)
+    lista_risultati.append(risultato)
+
+def Elimina_Risultati(_,__):
+    for res in lista_risultati:
+        dpg.delete_item(res)
+    lista_risultati.clear()
 
 #window
 with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_scrollbar=True) as w:
@@ -79,6 +87,7 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
     with dpg.group(horizontal=True):
         button4= dpg.add_button(label="Cancella Tutto", callback=Cancella_tutto)
         button1= dpg.add_button(label="Realizza il cut-up",callback=Cut_up)
+        button5= dpg.add_button(label="Elimina risultati", callback=Elimina_Risultati)
   
     ultima_barra = dpg.add_separator()
     dpg.add_spacer()
