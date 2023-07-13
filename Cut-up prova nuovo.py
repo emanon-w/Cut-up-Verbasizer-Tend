@@ -48,7 +48,6 @@ def Elimina_Riga(_, __):
         dpg.delete_item (lista_frasi.pop())
 
 def Cut_up(_,__):
-
     lista_parole = []
     for frasi in lista_frasi:
         parole = dpg.get_value(frasi)
@@ -65,7 +64,6 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
     dpg.add_separator()
     dpg.add_spacer()
 
-#button
     with dpg.group(horizontal=True):
         button2= dpg.add_button(label="Aggiungi nuova riga", callback = Aggiungi_Riga)
         button3= dpg.add_button(label="Elimina riga", callback = Elimina_Riga)
@@ -75,7 +73,6 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
         lista_frasi.append(frasi)
         dpg.add_spacer()
 
-    
     dpg.add_separator()
     spaziatore = dpg.add_spacer()
 
@@ -86,8 +83,7 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
     ultima_barra = dpg.add_separator()
     dpg.add_spacer()
 
-#immagine Bowie
-    width, height, channels, data = dpg.load_image("Immagini\\Bowie.jpg")
+    width, height, channels, data = dpg.load_image("Immagini\\Bowie.jpg") #immagine Bowie
     with dpg.texture_registry(show=False):
         dpg.add_static_texture(width=width, height=height, default_value=data, tag="texture_tag")
     dpg.add_image("texture_tag")
