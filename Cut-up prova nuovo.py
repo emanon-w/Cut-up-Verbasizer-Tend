@@ -34,57 +34,35 @@ with dpg.theme() as global_theme:
 dpg.bind_theme(global_theme)
 
 #variabili
-numero_stringa = 5
+numero_frasi = 5
+lista_frasi = []
 
 #funzioni/callback
-def Cancella_tutto (sender, app_data):
-    print(f"sender is: {sender}")
-    print(f"app_data is: {app_data}")
-    dpg.set_value(input_text1,"")
-    dpg.set_value(input_text2,"")
-    dpg.set_value(input_text3,"")
-    dpg.set_value(input_text4,"")
-    dpg.set_value(input_text5,"")
+def Cancella_tutto (_, __):
+    for frasi in lista_frasi:
+        dpg.set_value(frasi, "")
 
-def New_Line(sender1, app_data1):
-    print(f"sender is: {sender1}")
-    print(f"app_data is: {app_data1}")
-    global numero_stringa
-    global nuovo_testo
-    global inserisci
-    numero_stringa += 1
-    nuovo_testo = dpg.add_input_text(label="Inserisci qui la nuova frase:", before=spaziatore) #stessa posizione before=spaziatore del rigo sopra, add_same_line non va 
-    print(numero_stringa)
-    return numero_stringa
+def Aggiungi_Riga(_, __):
+    global numero_frasi
+    numero_frasi += 1
+    frasi = dpg.add_input_text(label="Inserisci qui la nuova frase:", before = spaziatore)
+    lista_frasi.append(frasi)
 
-#Da scrivere - Delete_Line
-def Delete_Line(sender2, app_data2):
-    print(f"sender is: {sender2}")
-    print(f"app_data is: {app_data2}")
-    #dpg.delete_item(con l'indice -1 nella lista delle frasi)
+def Elimina_Riga(_, __): 
+    global numero_frasi
+    if numero_frasi > 5:
+        dpg.delete_item (lista_frasi.pop())
+        numero_frasi -= 1
+        print(numero_frasi)
 
-
-
-def Cut_up(sender3,app_data3):
-    print(f"sender is: {sender3}")
-    print(f"app_data is: {app_data3}")
-
-    frase1 = dpg.get_value(input_text1)
-    frase2 = dpg.get_value(input_text2)
-    frase3 = dpg.get_value(input_text3)
-    frase4 = dpg.get_value(input_text4)
-    frase5 = dpg.get_value(input_text5)
-
-    taglio1 = frase1.split()
-    taglio2 = frase2.split()
-    taglio3 = frase3.split()
-    taglio4 = frase4.split()
-    taglio5 = frase5.split()
-
-    Verbasize = taglio1 + taglio2 + taglio3 + taglio4 + taglio5
-    random.shuffle(Verbasize)
-    dpg.add_text(" ".join(Verbasize), before=fine)
-
+def Cut_up(_,__):
+    for frasi in (lista_frasi):
+        parole = dpg.get_value(frasi)   
+        lista_frasi.append(parole)
+        taglio = lista_frasi.split()
+        
+    random.shuffle(taglio)
+    dpg.add_text((taglio), before=ultima_barra)
 
 #window
 with dpg.window(label="Cut-up Verbasizer", width=1200, height=720) as w:
@@ -95,30 +73,15 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720) as w:
     dpg.add_spacer()
 
 #button
-   
     with dpg.group(horizontal=True):
-        button2= dpg.add_button(label="Aggiungi nuova riga", callback=New_Line)
-        button3= dpg.add_button(label="Elimina riga", callback =Delete_Line)
+        button2= dpg.add_button(label="Aggiungi nuova riga", callback = Aggiungi_Riga)
+        button3= dpg.add_button(label="Elimina riga", callback = Elimina_Riga)
 
-    with dpg.group(horizontal=True):   
-        input_text1 = dpg.add_input_text(label="Inserisci qui la prima frase:", default_value="")
+    for i in range(5):
+        frasi = dpg.add_input_text(label="Inserisci qui la frase:")
+        lista_frasi.append(frasi)
         dpg.add_spacer()
 
-    with dpg.group(horizontal=True):
-        input_text2 = dpg.add_input_text(label="Inserisci qui la seconda frase:", default_value="")
-        dpg.add_spacer()
-
-    with dpg.group(horizontal=True):
-        input_text3 = dpg.add_input_text(label="Inserisci qui la terza frase:", default_value="")
-        dpg.add_spacer()
-
-    with dpg.group(horizontal=True):
-        input_text4 = dpg.add_input_text(label="Inserisci qui la quarta frase:", default_value="")
-        dpg.add_spacer()
-
-    with dpg.group(horizontal=True):
-        input_text5 = dpg.add_input_text(label="Inserisci qui la quinta frase:", default_value="")
-        dpg.add_spacer()
     
     dpg.add_separator()
     spaziatore = dpg.add_spacer()
@@ -126,11 +89,8 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720) as w:
     with dpg.group(horizontal=True):
         button4= dpg.add_button(label="Cancella Tutto", callback=Cancella_tutto)
         button1= dpg.add_button(label="Realizza il cut-up",callback=Cut_up)
-    
-    
-    
   
-    fine = dpg.add_separator()
+    ultima_barra = dpg.add_separator()
     dpg.add_spacer()
 
 #immagine Bowie
