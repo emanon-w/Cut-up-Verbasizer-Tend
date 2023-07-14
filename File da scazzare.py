@@ -58,6 +58,7 @@ def Cut_up(_,__):
     random.shuffle(lista_parole)
     risultato = dpg.add_text(" ".join(lista_parole), before=ultima_barra)
     lista_risultati.append(risultato)
+    dpg.set_value(operazione, risultato)
 
 def Elimina_Risultati(_,__):
     for res in lista_risultati:
@@ -76,7 +77,6 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
         button2= dpg.add_button(label="Aggiungi nuova riga", callback = Aggiungi_Riga)
         button3= dpg.add_button(label="Elimina riga", callback = Elimina_Riga)
 
-    dpg.add_spacer()
     dpg.add_separator()
 
     for i in range(5):
@@ -96,6 +96,9 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
             dpg.add_text("Svuota le caselle di testo.")
         with dpg.tooltip("elimina risultati"):
             dpg.add_text("Elimina i testi risultati dal Cut up")
+
+    with dpg.child_window(width=1000, height=200, menubar=False):
+        operazione = dpg.add_text("")
 
 
     ultima_barra = dpg.add_separator()
