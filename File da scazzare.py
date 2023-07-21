@@ -1,5 +1,8 @@
 import dearpygui.dearpygui as dpg
 import random
+import textwrap
+
+wrapper = textwrap.TextWrapper(width=1000)
 
 dpg.create_context()
 dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
@@ -17,6 +20,7 @@ with dpg.theme() as global_theme:
         dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (105, 140, 123), category=dpg.mvThemeCat_Core)
         dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (100,100,100), category=dpg.mvThemeCat_Core)
         dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 6, category=dpg.mvThemeCat_Core)
+        dpg.add_theme_style(dpg.mvStyleVar_WindowPadding, 10)
 
     with dpg.theme_component(dpg.mvInputText):
         dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (50,50,50), category=dpg.mvThemeCat_Core)
@@ -28,6 +32,8 @@ with dpg.theme() as global_theme:
         dpg.add_theme_color(dpg.mvThemeCol_Text,(255,255,255), category=dpg.mvThemeCat_Core)
         dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (55,55,55), category=dpg.mvThemeCat_Core)
         dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 6, category=dpg.mvThemeCat_Core)
+    with dpg.theme_component(dpg.mvWindowAppItem):
+        ()
 
 dpg.bind_theme(global_theme)
 
@@ -56,9 +62,8 @@ def Cut_up(_,__):
         taglio = parole.split()
         lista_parole.extend(taglio)
     random.shuffle(lista_parole)
-    risultato = dpg.add_text(" ".join(lista_parole), before=ultima_barra)
+    risultato = dpg.add_text(" ".join(lista_parole), before=barra_secondaria, wrap=1040, bullet=False)
     lista_risultati.append(risultato)
-    dpg.set_value(operazione, risultato)
 
 def Elimina_Risultati(_,__):
     for res in lista_risultati:
@@ -66,9 +71,10 @@ def Elimina_Risultati(_,__):
     lista_risultati.clear()
 
 #window
-with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_scrollbar=True) as w:
+with dpg.window(label="Cut-up Verbasizer", width=1280, height=720, horizontal_scrollbar=True) as w:
     dpg.bind_font(grassetto_font)
 
+    dpg.add_spacer()
     dpg.add_text("Benvenuti nel Verbasizer. Inserisci le frasi negli spazi sottostanti per iniziare:")
     dpg.add_separator()
     dpg.add_spacer()
@@ -93,22 +99,27 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
         button1= dpg.add_button(label="Realizza il cut-up",callback=Cut_up)
 
         with dpg.tooltip("svuota"):
-            dpg.add_text("Svuota le caselle di testo.")
+            dpg.add_text("Svuota gli elementi presenti nelle caselle di testo.")
         with dpg.tooltip("elimina risultati"):
             dpg.add_text("Elimina i testi risultati dal Cut up")
 
-    with dpg.child_window(width=1000, height=200, menubar=False):
-        operazione = dpg.add_text("")
-
-
+    with dpg.child_window(width=1050, height=250, menubar=True, horizontal_scrollbar=True):
+            barra_secondaria = dpg.add_spacer()
+  
+    dpg.add_spacer()
     ultima_barra = dpg.add_separator()
     dpg.add_spacer()
+    
+    with dpg.item_handler_registry():
+        dpg.add_item_visible_handler(user_data=w)
 
     width, height, channels, data = dpg.load_image("Immagini\\Bowie.jpg") #immagine Bowie
     with dpg.texture_registry(show=False):
         dpg.add_static_texture(width=width, height=height, default_value=data, tag="texture_tag")
     dpg.add_image("texture_tag")
-    dpg.add_text("David Bowie alle prese con il cut-up.")
+    dpg.add_text("David Bowie mentre utilizza il Cut-up per scrivere le proprie canzoni negli anni '70")
+    dpg.add_spacer()
+
 
 dpg.setup_dearpygui()
 dpg.show_viewport()

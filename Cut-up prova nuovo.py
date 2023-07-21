@@ -2,7 +2,7 @@ import dearpygui.dearpygui as dpg
 import random
 
 dpg.create_context()
-dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
+dpg.create_viewport(title='Cut Up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
                     min_width=600, min_height=600)
 
 #font
@@ -56,7 +56,7 @@ def Cut_up(_,__):
         taglio = parole.split()
         lista_parole.extend(taglio)
     random.shuffle(lista_parole)
-    risultato = dpg.add_text(" ".join(lista_parole), before=ultima_barra)
+    risultato = dpg.add_text(" ".join(lista_parole), before=barra_secondaria, wrap=1000)
     lista_risultati.append(risultato)
 
 def Elimina_Risultati(_,__):
@@ -96,8 +96,11 @@ with dpg.window(label="Cut-up Verbasizer", width=1200, height=720, horizontal_sc
             dpg.add_text("Svuota le caselle di testo.")
         with dpg.tooltip("elimina risultati"):
             dpg.add_text("Elimina i testi risultati dal Cut up")
-
-
+    
+    with dpg.child_window(width=1050, height=250, menubar=True, horizontal_scrollbar=True):
+        barra_secondaria = dpg.add_spacer()
+    
+    dpg.add_spacer()
     ultima_barra = dpg.add_separator()
     dpg.add_spacer()
 

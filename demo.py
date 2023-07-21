@@ -2,10 +2,11 @@ import dearpygui.dearpygui as dpg
 import dearpygui.demo as demo
 
 dpg.create_context()
-dpg.create_viewport(title='Custom Title', width=1200, height=720,x_pos=0,y_pos=0)
+dpg.create_viewport(title='Custom Title', width=1200, height=720,x_pos=0,y_pos=0, max_width=1920, max_height=1080)
 
 with dpg.window(label="Demo", width=1200, height=720, horizontal_scrollbar=True) as w:
     demo.show_demo()
+    
 
 dpg.setup_dearpygui()
 dpg.show_viewport()
