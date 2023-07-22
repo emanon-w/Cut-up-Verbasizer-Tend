@@ -1,8 +1,9 @@
 import dearpygui.dearpygui as dpg
 import random
-import textwrap
+import requests
+import xml.etree.ElementTree as ET
+import math
 
-wrapper = textwrap.TextWrapper(width=1000)
 
 dpg.create_context()
 dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, y_pos=0,
@@ -11,7 +12,7 @@ dpg.create_viewport(title='Cut-up Verbasizer', width=1280, height=720, x_pos=0, 
 #font
 with dpg.font_registry():
     default_font = dpg.add_font("Font\\times.ttf",20)
-    grassetto_font= dpg.add_font("Font\\times-new-roman-bold.otf",20)
+    grassetto_font= dpg.add_font("Font\\Montserrat-Bold.ttf",20)
 
 #theme
 with dpg.theme() as global_theme:
@@ -62,13 +63,31 @@ def Cut_up(_,__):
         taglio = parole.split()
         lista_parole.extend(taglio)
     random.shuffle(lista_parole)
-    risultato = dpg.add_text(" ".join(lista_parole), before=barra_secondaria, wrap=1040, bullet=False)
+    risultato = dpg.add_text(" ".join(lista_parole), before=barra_secondaria, wrap=1000, bullet=True)
     lista_risultati.append(risultato)
 
 def Elimina_Risultati(_,__):
     for res in lista_risultati:
         dpg.delete_item(res)
     lista_risultati.clear()
+
+def notizie(_,__):
+    res = requests.get("https://www.ilpost.it/feed") #sito RSS
+    stringa = ET.fromstring(res.text)
+
+    channel = stringa.find("channel")
+    notizie = set()
+
+    for notizia in channel.findall("item"):
+        if len(notizie) == 2 * len(lista_frasi):
+            break
+        notizie.add(notizia.find("title").text)
+
+    notizie = list(notizie)
+    notizie_per_riga = len(notizie) // len(lista_frasi)
+    
+    for i, frasi in enumerate(lista_frasi):
+        dpg.set_value(frasi, ' '.join(notizie[i * notizie_per_riga:i * notizie_per_riga + notizie_per_riga]))
 
 #window
 with dpg.window(label="Cut-up Verbasizer", width=1280, height=720, horizontal_scrollbar=True) as w:
@@ -97,7 +116,7 @@ with dpg.window(label="Cut-up Verbasizer", width=1280, height=720, horizontal_sc
         button4= dpg.add_button(label="Cancella Tutto", callback=Cancella_tutto, tag="svuota")
         button5= dpg.add_button(label="Elimina risultati", callback=Elimina_Risultati, tag="elimina risultati")
         button1= dpg.add_button(label="Realizza il cut-up",callback=Cut_up)
-
+        button6= dpg.add_button(label="Carica notizie dai giornali", callback=notizie)
         with dpg.tooltip("svuota"):
             dpg.add_text("Svuota gli elementi presenti nelle caselle di testo.")
         with dpg.tooltip("elimina risultati"):
